@@ -1,5 +1,5 @@
-from typing import Union
 import os
+from typing import Union
 
 from autogen import AssistantAgent, UserProxyAgent
 
@@ -75,5 +75,5 @@ LANGUAGE_TURKISH = "Turkish"
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 
 # Version
-with open(os.path.join(os.path.dirname(__file__), 'VERSION')) as version_file:
+with open(os.path.join(os.path.dirname(__file__), "VERSION")) as version_file:
     APP_VERSION = version_file.read().strip()

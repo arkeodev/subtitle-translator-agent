@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -93,7 +94,29 @@ def generate_llm_config(
 
 
 def main():
-    st.set_page_config(page_title="Subtitle Translator", page_icon="🔄", layout="wide")
+    # Get port from command line argument or use default
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8501
+
+    # Configure Streamlit to use the specified port
+    st.set_page_config(
+        page_title="Subtitle Translator",
+        page_icon="🔄",
+        layout="wide",
+        menu_items={
+            "Get Help": None,
+            "Report a bug": None,
+            "About": "Subtitle Translator v1.0",
+        },
+    )
+
+    # Set up graceful shutdown handler
+    def handle_shutdown():
+        logging.info("Shutting down Subtitle Translator application...")
+        sys.exit(0)
+
+    # Register shutdown handler
+    st.session_state.on_shutdown = handle_shutdown
+
     setup_logging()
     load_css()
     set_api_keys()
@@ -356,4 +379,8 @@ def cancel_overwrite():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        logging.info("Received shutdown signal")
+        sys.exit(0)

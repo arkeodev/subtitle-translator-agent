@@ -4,3 +4,5 @@ python-dotenv
 pyautogen
 requests
 beautifulsoup4
+urllib3
+flaml[automl]
