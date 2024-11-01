@@ -6,14 +6,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl=7.* && rm 
 
 # Create non-root user
 RUN useradd -m -s /bin/bash appuser
-USER appuser
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install any needed packages specified in requirements.txt
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy files first
+COPY . .
+
+# Set correct ownership
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Install dependencies as non-root user
+RUN pip install --no-cache-dir --user -r requirements.txt
+ENV PATH="/home/appuser/.local/bin:${PATH}"
 
 # Copy the current directory contents into the container at /app
 COPY . .
@@ -28,6 +36,6 @@ EXPOSE $PORT
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f "http://localhost:${PORT}/_stcore/health" -H "Accept: application/json" || exit 1
 
- # Run app.py when the container launches with the specified port
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "--server.address=0.0.0.0", "--server.headless=true"]
-CMD ["/bin/sh", "-c", "echo $PORT"]
+# Run app.py when the container launches with the specified port
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD ["streamlit run app.py --server.port $PORT --server.address=0.0.0.0 --server.headless=true"]
