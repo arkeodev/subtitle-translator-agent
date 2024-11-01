@@ -1,8 +1,12 @@
- # Use an official Python runtime as a parent image
+# Use an official Python runtime as a parent image
 FROM python:3.11.7-slim
   
 # Install curl for healthcheck
- RUN apt-get update && apt-get install -y --no-install-recommends curl=7.* && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl=7.* && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash appuser
+USER appuser
 
 # Set the working directory in the container
 WORKDIR /app
@@ -25,5 +29,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f "http://localhost:${PORT}/_stcore/health" -H "Accept: application/json" || exit 1
 
  # Run app.py when the container launches with the specified port
- ENTRYPOINT ["streamlit", "run", "app.py", "--server.port"]
-CMD ["${PORT}"]
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port", "--server.address=0.0.0.0", "--server.headless=true"]
+CMD ["/bin/sh", "-c", "echo $PORT"]
