@@ -1,6 +1,7 @@
-streamlit
-openai
-python-dotenv
-pyautogen
-requests
-beautifulsoup4
+streamlit==1.39.0
+openai==1.53.0
+python-dotenv==1.0.1
+pyautogen==0.3.1
+requests==2.32.3
+beautifulsoup4==4.12.3
+flaml[automl]==2.3.2
