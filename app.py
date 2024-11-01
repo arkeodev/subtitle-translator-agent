@@ -97,6 +97,9 @@ def main():
     # Get port from command line argument or use default
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8501
 
+    # Set port for Streamlit
+    os.environ['STREAMLIT_SERVER_PORT'] = str(port)
+
     # Configure Streamlit to use the specified port
     st.set_page_config(
         page_title="Subtitle Translator",
