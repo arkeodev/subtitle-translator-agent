@@ -1,0 +1,6 @@
+streamlit
+openai
+python-dotenv
+pyautogen
+requests
+beautifulsoup4
